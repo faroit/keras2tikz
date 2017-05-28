@@ -1,4 +1,3 @@
-from keras import applications
 import dot2tex as d2t
 import pydot_ng as pydot
 import keras.layers.convolutional
@@ -72,10 +71,12 @@ def model_to_dot(model,
         if class_name == "Input":
             node.set("color", 'red')
 
-        if class_name == "Input":
-            node.set("color", 'red')
-
         dot.add_node(node)
+
+    # add output node
+    output_node = pydot.Node("output_node", label="Output")
+    output_node.set("shape", 'box')
+    dot.add_node(output_node)
 
     # Connect nodes with edges.
     for layer in layers:
@@ -89,12 +90,25 @@ def model_to_dot(model,
                     label = str(inbound_layer.output_shape[1:])
                     edge = pydot.Edge(inbound_layer_id, layer_id, label=label)
                     dot.add_edge(edge)
+
+    # connect output
+    out_edge = pydot.Edge(
+        str(id(layers[-1])), "output_node", label=str(model.output_shape[1:])
+    )
+    dot.add_edge(out_edge)
+
     return dot
 
 
-model = applications.VGG16(weights=None)
-dot = model_to_dot(model)
-tex_code = d2t.dot2tex(dot.to_string(), format='tikz', crop=True)
-tex_file = open("model.tex", 'w')
-tex_file.write(tex_code)
-tex_file.close()
+def gen_tikz_from_model(model):
+    dot = model_to_dot(model)
+    return d2t.dot2tex(dot.to_string(), format='tikz', crop=True)
+
+
+if __name__ == '__main__':
+    from keras import applications
+    model = applications.VGG16(weights=None)
+    tix_code = gen_tikz_from_model(model)
+    tex_file = open("model.tex", 'w')
+    tex_file.write(tex_file)
+    tex_file.close()
