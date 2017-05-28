@@ -1,9 +1,11 @@
 # deeptikz
 Generate (hopefully) readable tikz code for DNN layer diagrams.
 
-# Why?
+## Why?
 
 Keras has a `summary` and a [builtin graphviz export](https://github.com/fchollet/keras/blob/master/keras/utils/vis_utils.py). Both show the input and output shapes of all layers. However, many papers show the layer parameters, so I've added some common parameters like hidden units (Dense + Recurrent), Kernel size and number of filter (Convolutional), Pooling Dimensions... to the output graph...
+
+## Usage
 
 ```python
 from keras import applications
