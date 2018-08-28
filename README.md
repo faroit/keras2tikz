@@ -1,4 +1,4 @@
-# deeptikz
+# keras2tikz
 Generate (hopefully) readable tikz code for DNN layer diagrams.
 
 ## Why?
