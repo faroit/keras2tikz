@@ -90,7 +90,12 @@ def model_to_dot(model,
                 for inbound_layer in inbound_layers:
                     inbound_layer_id = str(id(inbound_layer))
                     layer_id = str(id(layer))
-                    label = str(inbound_layer.output_shape[1:])
+                    output_shape = inbound_layer.output_shape
+                    if isinstance(output_shape, list):
+                        if len(output_shape) > 1:
+                            raise Exception("More than one output_shape found")
+                        output_shape = output_shape[0]
+                    label = str(output_shape[1:])
                     edge = pydot.Edge(inbound_layer_id, layer_id, label=label)
                     dot.add_edge(edge)
 
