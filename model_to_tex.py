@@ -83,11 +83,19 @@ def model_to_dot(model,
         layer_id = str(id(layer))
         for i, node in enumerate(layer.inbound_nodes):
             node_key = layer.name + '_ib-' + str(i)
-            if node_key in model.container_nodes:
-                for inbound_layer in node.inbound_layers:
+            if node_key in model._network_nodes:
+                inbound_layers = node.inbound_layers
+                if not isinstance(inbound_layers, list):
+                    inbound_layers = [inbound_layers]
+                for inbound_layer in inbound_layers:
                     inbound_layer_id = str(id(inbound_layer))
                     layer_id = str(id(layer))
-                    label = str(inbound_layer.output_shape[1:])
+                    output_shape = inbound_layer.output_shape
+                    if isinstance(output_shape, list):
+                        if len(output_shape) > 1:
+                            raise Exception("More than one output_shape found")
+                        output_shape = output_shape[0]
+                    label = str(output_shape[1:])
                     edge = pydot.Edge(inbound_layer_id, layer_id, label=label)
                     dot.add_edge(edge)
 
