@@ -84,7 +84,10 @@ def model_to_dot(model,
         for i, node in enumerate(layer.inbound_nodes):
             node_key = layer.name + '_ib-' + str(i)
             if node_key in model._network_nodes:
-                for inbound_layer in node.inbound_layers:
+                inbound_layers = node.inbound_layers
+                if not isinstance(inbound_layers, list):
+                    inbound_layers = [inbound_layers]
+                for inbound_layer in inbound_layers:
                     inbound_layer_id = str(id(inbound_layer))
                     layer_id = str(id(layer))
                     label = str(inbound_layer.output_shape[1:])
